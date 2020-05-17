@@ -4,13 +4,13 @@
 #include <stdlib.h>
 #include <wiringPi.h>
  
-#if defined(_WIN32) && !def#E30D1A
+#if defined(_WIN32) && !defined(__CYGWIN__)
 #include <windows.h>
 #else
 #include <sys/select.h>
 #endif
  
-#include <sphinxba#D01313#D01313se/err.h>
+#include <sphinxbase/err.h>
 #include <sphinxbase/ad.h>
  
 #include "pocketsphinx.h"
@@ -43,15 +43,6 @@ sleep_msec(int32 ms)
     select(0, NULL, NULL, NULL, &tmo);
 #endif
 }
- 
-/*
- * Main utterance processing loop:
- *     for (;;) {
- *        start utterance and wait for speech to process
- *        decoding till end-of-utterance silence will be detected
- *        print utterance result;
- *     }
- */
 static void
 recognize_from_microphone()
 {
@@ -62,23 +53,23 @@ recognize_from_microphone()
     char const *hyp;
  
     if ((ad = ad_open_dev("plughw:1,0",16000)) == NULL)
-        E_FATAL("Failed to open audio device\n");
+        E_FATAL("Gagal Membuak Device Audio, Silahkan Configurasi Ulang Alsa\n");
     if (ad_start_rec(ad) < 0)
-        E_FATAL("Failed to start recording\n");
+        E_FATAL("Gagal Memulai Rekaman Suara\n");
  
     if (ps_start_utt(ps) < 0)
-        E_FATAL("Failed to start utterance\n");
+        E_FATAL("Gagal Mengulangi Ucapan\n");
     utt_started = FALSE;
     E_INFO("Ready....\n");
  
     for (;;) {
         if ((k = ad_read(ad, adbuf, 2048)) < 0)
-            E_FATAL("Failed to read audio\n");
+            E_FATAL("Gagal Membuat Audio\n");
         ps_process_raw(ps, adbuf, k, FALSE, FALSE);
         in_speech = ps_get_in_speech(ps);
         if (in_speech && !utt_started) {
             utt_started = TRUE;
-            E_INFO("Listening...\n");
+            E_INFO("Sedang Mendengarkan...\n");
         }
         if (!in_speech && utt_started) {
             /* speech -> silence transition, time to start new utterance  */
@@ -87,7 +78,7 @@ recognize_from_microphone()
             if (hyp != NULL) {
         if( strcmp(hyp,"HELLO") == 0)
         {
-            system("espeak 'hello, what can i do for you, sir'");
+            system("espeak 'hello, apa yang dapat saya bantu'");
             printf("%s\n", hyp);
         }else if(strcmp(hyp,"SATU") == 0)
         {
@@ -209,9 +200,9 @@ recognize_from_microphone()
             }
  
             if (ps_start_utt(ps) < 0)
-                E_FATAL("Failed to start utterance\n");
+                E_FATAL("Gagal Memulai Kalimat\n");
             utt_started = FALSE;
-            E_INFO("Ready....\n");
+            E_INFO("Siap Mendengarkan....\n");
         }
         sleep_msec(100);
     }
@@ -225,19 +216,19 @@ main(int argc, char *argv[])
  
     config = cmd_ln_init(   NULL, ps_args(), TRUE,
                 "-hmm", "/usr/local/share/pocketsphinx/model/en-us/en-us",
-                "-lm",  "/home/pi/jarvis/stt_engines/pocketsphinx/5293.lm",
-                "-dict","/home/pi/jarvis/stt_engines/pocketsphinx/5293.dic",
+                "-lm",  "/home/pi/jarvis/stt_engines/pocketsphinx/3890.lm",
+                "-dict","/home/pi/jarvis/stt_engines/pocketsphinx/3890.dic",
                 "-samprate","16000/8000/48000",
                 NULL);
  
     if(config == NULL){
-    fprintf(stderr, "Failed to create object, see long for details\n");
+    fprintf(stderr, "gagal membuat file recognizer, lihat detailnya di atas\n");
     return -1;
     }
  
     ps = ps_init(config);
     if (ps == NULL) {
-        fprintf(stderr, "Failed to create recognizer, see long for details\n");
+        fprintf(stderr, "gagal membuat file recognizer, lihat detailnya di atas\n");
     return -1;
     }
  
