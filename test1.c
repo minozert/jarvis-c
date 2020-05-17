@@ -17,7 +17,7 @@
  
 #define LED_SATU 2
 #define LED_DUA 3
-#define LED_TIGA#C71313 14
+#define LED_TIGA 14
 #define LED_EMPAT 17
 #define LED_LIMA 27
 #define LED_ENAM 22
@@ -225,8 +225,8 @@ main(int argc, char *argv[])
  
     config = cmd_ln_init(   NULL, ps_args(), TRUE,
                 "-hmm", "/usr/local/share/pocketsphinx/model/en-us/en-us",
-                "-lm",  "/home/pi/5293.lm",
-                "-dict","/home/pi/5293.dic",
+                "-lm",  "/home/pi/jarvis/stt_engines/pocketsphinx/5293.lm",
+                "-dict","/home/pi/jarvis/stt_engines/pocketsphinx/5293.dic",
                 "-samprate","16000/8000/48000",
                 NULL);
  
